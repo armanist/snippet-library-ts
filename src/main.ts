@@ -23,10 +23,17 @@ function startApp(): void {
     throw Error('Snippet list element was not found.');
   }
 
+  const searchInput = document.querySelector<HTMLInputElement>('#snippet-search');
+
+  if(!searchInput) {
+    throw Error('Search imput element was not found.');
+  }
+
   const snippetController = new SnippetController(
     snippetStore, 
     form, 
-    snippetList
+    snippetList,
+    searchInput,
   );
 
   snippetController.render();

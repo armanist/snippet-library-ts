@@ -7,25 +7,51 @@ export class SnippetController {
     private readonly store: SnippetStore;
     private readonly form: HTMLFormElement;
     private readonly snippetList: HTMLDivElement;
+    private readonly searchInput: HTMLInputElement;
+    private searchTerm: string;
 
     constructor(
         store: SnippetStore,
         form: HTMLFormElement,
         snippetList: HTMLDivElement,
+        searchInput: HTMLInputElement,
     ) {
         this.store = store;
         this.form = form;
         this.snippetList = snippetList;
+        this.searchInput = searchInput;
+        this.searchTerm = '';
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
 
         this.bindEvents();
     }
 
     render(): void {
-        this.snippetList.innerHTML = this.store
+        const snippetsToRender = this.store
             .getAll()
+            .filter((snippet) => {
+                const searchableText = [
+                    snippet.title,
+                    snippet.language,
+                    snippet.code,
+                    ...snippet.tags
+                ]
+                    .join(' ')
+                    .toLowerCase()
+
+                return searchableText.includes(this.searchTerm);
+            });
+
+        if (snippetsToRender.length === 0) {
+            this.snippetList.innerHTML = `<p class="empty-state">No snippets found.</p>`;
+
+            return;
+        }
+
+        this.snippetList.innerHTML = snippetsToRender
             .map((snippet) => renderSnippet(snippet))
             .join('');
     }
@@ -33,6 +59,7 @@ export class SnippetController {
     private bindEvents(): void {
         this.form.addEventListener('submit', this.handleSubmit);
         this.snippetList.addEventListener('click', this.handleDelete);
+        this.searchInput.addEventListener('input', this.handleSearch);
     }
 
     private handleSubmit(event: SubmitEvent): void {
@@ -85,6 +112,12 @@ export class SnippetController {
         }
 
         this.store.remove(snippetId);
+        this.render();
+    }
+
+    private handleSearch(): void {
+        this.searchTerm = this.searchInput.value.trim().toLowerCase();
+
         this.render();
     }
 }

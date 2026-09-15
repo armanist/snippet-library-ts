@@ -47,7 +47,14 @@ export function renderAppShell(): string {
 
           <section class="panel">
             <h2>Your Snippets</h2>
-
+            <label class="snippet-search">
+              Search
+              <input
+                id="snippet-search"
+                type="search"
+                placeholder="Search snippets..."
+              />
+            </label>
             <div class="snippet-list" id="snippet-list"></div>
           </section>
         </section>

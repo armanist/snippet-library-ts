@@ -216,3 +216,26 @@ h1 {
 .delete-button:hover {
   background: #fee2e2;
 }
+.snippet-search {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.snippet-search input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111827;
+}
+
+  .empty-state {
+    margin: 0;
+    color: #6b7280;
+    text-align: center;
+  }
