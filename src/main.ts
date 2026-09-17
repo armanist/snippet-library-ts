@@ -29,11 +29,25 @@ function startApp(): void {
     throw Error('Search imput element was not found.');
   }
 
+  const deleteDialog = document.querySelector<HTMLDialogElement>('#delete-dialog');
+
+  if(!deleteDialog) {
+    throw Error('Delete dialog element was not found.');
+  }
+
+  const toast = document.querySelector<HTMLDivElement>('#toast');
+
+  if(!toast) {
+    throw Error('Toast element was not found.');
+  }
+
   const snippetController = new SnippetController(
     snippetStore, 
     form, 
     snippetList,
     searchInput,
+    deleteDialog,
+    toast,
   );
 
   snippetController.render();

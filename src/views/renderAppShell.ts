@@ -1,4 +1,6 @@
 import { languages } from "../types";
+import { renderDeleteDialog } from "./renderDeleteDialog";
+import { renderToast } from "./renderToast";
 
 function renderLanguageOptions(): string {
     return languages.map((language) => `<option value="${language}">${language.toUpperCase()}</option>`).join('');
@@ -59,5 +61,8 @@ export function renderAppShell(): string {
           </section>
         </section>
       </main>
+
+      ${renderDeleteDialog()}
+      ${renderToast()}
     `;
   }
