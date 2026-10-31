@@ -6,6 +6,7 @@ export class SnippetList {
     private readonly dataSource: SnippetDataSource;
     private readonly listElement: HTMLDivElement;
     private readonly searchInput: HTMLInputElement;
+
     private searchTerm: string;
 
     constructor(
@@ -20,8 +21,11 @@ export class SnippetList {
         this.searchTerm = '';
 
         this.handleSearch = this.handleSearch.bind(this);
-
         this.searchInput.addEventListener('input', this.handleSearch);
+
+        this.handleClick = this.handleClick.bind(this);
+        this.listElement.addEventListener('click', this.handleClick);
+
         changes.subscribe(() => this.render());
     }
 
@@ -56,5 +60,21 @@ export class SnippetList {
         this.searchTerm = this.searchInput.value.trim().toLowerCase();
 
         await this.render();
+    }
+
+    private handleClick(event: MouseEvent): void {
+        const target = event.target;
+
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        const id = target.closest<HTMLButtonElement>('[data-snippet-id]')?.dataset.snippetId;
+
+        if (!id) {
+            return;
+        }
+
+        this.listElement.dispatchEvent(new CustomEvent('delete-requested', { detail: id }));
     }
 }

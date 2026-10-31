@@ -7,6 +7,7 @@ import { SnippetStorage } from './snippets/services/snippetStorage';
 import { SnippetChanges } from './snippets/services/snippetChanges';
 import { SnippetList } from './snippets/snippetList/snippetList';
 import { Toast } from './shared/toast/toast';
+import { SnippetDelete } from './snippets/snippetDelete/snippetDelete';
 
 const snippetStorage = new SnippetStorage();
 const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
@@ -38,23 +39,26 @@ function startApp(): void {
     throw Error('Delete dialog element was not found.');
   }
 
-  const toast = document.querySelector<HTMLDivElement>('#toast');
+  const toastElement = document.querySelector<HTMLDivElement>('#toast');
 
-  if (!toast) {
+  if (!toastElement) {
     throw Error('Toast element was not found.');
   }
 
   const changes = new SnippetChanges();
-
+  const toast = new Toast(toastElement);
   const list = new SnippetList(snippetStore, changes, snippetList, searchInput);
+  const snippetDelete = new SnippetDelete(snippetStore, changes, toast, deleteDialog);
+
+  snippetList.addEventListener('delete-requested', (event) => {
+    snippetDelete.open((event as CustomEvent<string>).detail)
+  });
 
   new SnippetController(
     snippetStore,
     form,
-    snippetList,
     changes,
-    deleteDialog,
-    new Toast(toast),
+    toast
   );
 
   list.render();

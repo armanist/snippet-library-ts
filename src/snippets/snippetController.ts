@@ -9,39 +9,26 @@ export class SnippetController {
     private readonly toast: Toast;
 
     private readonly form: HTMLFormElement;
-    private readonly deleteDialog: HTMLDialogElement;
-    private readonly snippetList: HTMLDivElement;
-
-    private pendingDeleteId: string | null;
 
     constructor(
         store: SnippetStore,
         form: HTMLFormElement,
-        snippetList: HTMLDivElement,
         changes: SnippetChanges,
-        deleteDialog: HTMLDialogElement,
         toast: Toast,
     ) {
         this.store = store;
         this.form = form;
-        this.snippetList = snippetList;
         this.changes = changes;
 
-        this.deleteDialog = deleteDialog;
         this.toast = toast;
-        this.pendingDeleteId = null;
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleDialogClose = this.handleDialogClose.bind(this);
 
         this.bindEvents();
     }
 
     private bindEvents(): void {
         this.form.addEventListener('submit', this.handleSubmit);
-        this.snippetList.addEventListener('click', this.handleDelete);
-        this.deleteDialog.addEventListener('close', this.handleDialogClose);
     }
 
     private async handleSubmit(event: SubmitEvent): Promise<void> {
@@ -74,41 +61,5 @@ export class SnippetController {
         
         this.form.reset();
         this.toast.showSuccess('Snippet added.');
-    }
-
-    private handleDelete(event: MouseEvent): void {
-        const target = event.target;
-
-        if (!(target instanceof HTMLElement)) {
-            return;
-        }
-
-        const deleteButton = target.closest<HTMLButtonElement>('[data-snippet-id]');
-
-        if (!deleteButton) {
-            return;
-        }
-
-        const snippetId = deleteButton.dataset.snippetId;
-
-        if (!snippetId) {
-            return;
-        }
-
-        this.pendingDeleteId = snippetId;
-        this.deleteDialog.showModal();
-    }
-
-    private async handleDialogClose(): Promise<void> {
-        if (this.deleteDialog.returnValue !== 'confirm' || !this.pendingDeleteId) {
-            this.pendingDeleteId = null;
-            return;
-        }
-
-        await this.store.delete(this.pendingDeleteId);
-        
-        this.pendingDeleteId = null;
-        await this.changes.notify();
-        this.toast.showSuccess('Snippet deleted.');
     }
 }
