@@ -14,7 +14,7 @@ const snippetStorage = new SnippetStorage();
 const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
 
 function startApp(): void {
-  getElement<HTMLDivElement>('#app')!.innerHTML = renderAppShell();
+  getElement<HTMLDivElement>('#app').innerHTML = renderAppShell();
   
   const form = getElement<HTMLFormElement>('#snippet-form');
   const snippetList = getElement<HTMLDivElement>('#snippet-list');
@@ -25,11 +25,7 @@ function startApp(): void {
   const changes = new SnippetChanges();
   const toast = new Toast(toastElement);
   const list = new SnippetList(snippetStore, changes, snippetList, searchInput);
-  const snippetDelete = new SnippetDelete(snippetStore, changes, toast, deleteDialog);
-
-  snippetList.addEventListener('delete-requested', (event) => {
-    snippetDelete.open((event as CustomEvent<string>).detail)
-  });
+  new SnippetDelete(snippetStore, changes, toast, deleteDialog, snippetList);
 
   new SnippetForm(snippetStore, changes, toast, form);
 

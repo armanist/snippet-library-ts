@@ -14,6 +14,7 @@ export class SnippetDelete {
         changes: SnippetChanges,
         toast: Toast,
         dialog: HTMLDialogElement,
+        listElement: HTMLDivElement,
     ) {
         this.dataSource = dataSource;
         this.changes = changes;
@@ -21,21 +22,24 @@ export class SnippetDelete {
         this.dialog = dialog;
         this.pendingId = null;
 
-        this.hadleClose = this.hadleClose.bind(this);
-        this.dialog.addEventListener('close', this.hadleClose);
+        this.handleClose = this.handleClose.bind(this);
+        this.dialog.addEventListener('close', this.handleClose);
+
+        this.handleListClick = this.handleListClick.bind(this);
+        listElement.addEventListener('click', this.handleListClick);
     }
 
-    open(id: string): void {
+    private open(id: string): void {
         this.pendingId = id;
         this.dialog.returnValue = '';
         this.dialog.showModal();
     }
 
-    private async hadleClose(): Promise<void> {
+    private async handleClose(): Promise<void> {
         const id = this.pendingId;
         this.pendingId = null;
 
-        if(this.dialog.returnValue !== 'confirm' || !id) {
+        if (this.dialog.returnValue !== 'confirm' || !id) {
             return;
         }
 
@@ -43,5 +47,21 @@ export class SnippetDelete {
 
         this.changes.notify();
         this.toast.showSuccess('Snippet deleted.');
+    }
+
+    private handleListClick(event: MouseEvent): void {
+        const target = event.target;
+
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        const id = target.closest<HTMLButtonElement>('[data-snippet-id]')?.dataset.snippetId;
+
+        if (!id) {
+            return;
+        }
+
+        this.open(id);
     }
 }
