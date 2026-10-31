@@ -1,7 +1,7 @@
-import type { SnippetStore } from "./snippetStore";
-import type { Language, Snippet } from "../../types";
-import type { Toast } from "../../shared/toast/toast";
-import { renderSnippet } from "../../views/renderSnippet";
+import type { SnippetStore } from "./services/snippetStore";
+import type { Language, Snippet } from "./contracts/snippets";
+import type { Toast } from "../shared/toast/toast";
+import { renderSnippet } from "./snippetList/renderSnippet";
 
 
 

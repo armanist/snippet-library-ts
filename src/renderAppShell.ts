@@ -1,6 +1,6 @@
-import { languages } from "../types";
-import { renderDeleteDialog } from "./renderDeleteDialog";
-import { renderToast } from "./renderToast";
+import { languages } from "./snippets/contracts/snippets";
+import { renderDeleteDialog } from "./snippets/snippetDelete/renderDeleteDialog";
+import { renderToast } from "./shared/toast/renderToast";
 
 function renderLanguageOptions(): string {
     return languages.map((language) => `<option value="${language}">${language.toUpperCase()}</option>`).join('');

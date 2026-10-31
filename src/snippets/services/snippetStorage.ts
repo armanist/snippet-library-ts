@@ -1,4 +1,4 @@
-import type { Snippet } from "../../types";
+import type { Snippet } from "../contracts/snippets";
 
 export class SnippetStorage {
     

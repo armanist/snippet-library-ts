@@ -1,6 +1,6 @@
-import type { Snippet } from "../../types";
+import type { Snippet } from "../contracts/snippets";
 import type { SnippetStorage } from "./snippetStorage";
-import type { SnippetDataSource } from "./snippetDataSource";
+import type { SnippetDataSource } from "../contracts/snippetDataSource";
 
 export class SnippetStore implements SnippetDataSource {
 

@@ -1,9 +1,9 @@
 import './style.css';
-import { renderAppShell } from './views/renderAppShell';
-import { exampleSnippets } from './snippets';
-import { SnippetStore } from './features/snippets/snippetStore';
-import { SnippetController } from './features/snippets/snippetController';
-import { SnippetStorage } from './features/snippets/snippetStorage';
+import { renderAppShell } from './renderAppShell';
+import { exampleSnippets } from './snippets/services/exampleSnippets';
+import { SnippetStore } from './snippets/services/snippetStore';
+import { SnippetController } from './snippets/snippetController';
+import { SnippetStorage } from './snippets/services/snippetStorage';
 import { Toast } from './shared/toast/toast';
 
 const snippetStorage = new SnippetStorage();
