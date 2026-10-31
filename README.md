@@ -98,7 +98,3 @@ After a snippet is added or deleted, the form and delete units call `SnippetChan
 - Add IndexedDB as a second storage, selected by an environment variable.
 - Add editing support.
 - Add automated tests.
-
-## Learning goals
-
-This project is practice for TypeScript concepts including interfaces, union types, type-only imports, classes, private properties, typed DOM APIs, event handling, and runtime data handling, and for splitting an application into small units with one responsibility each.
