@@ -1,34 +1,31 @@
 import type { SnippetStore } from "./services/snippetStore";
 import type { Language, Snippet } from "./contracts/snippets";
 import type { Toast } from "../shared/toast/toast";
-import { renderSnippet } from "./snippetList/renderSnippet";
-
-
+import type { SnippetChanges } from "./services/snippetChanges";
 
 export class SnippetController {
     private readonly store: SnippetStore;
-    private readonly form: HTMLFormElement;
-    private readonly snippetList: HTMLDivElement;
-    private readonly searchInput: HTMLInputElement;
-    private searchTerm: string;
-
-    private readonly deleteDialog: HTMLDialogElement;
+    private readonly changes: SnippetChanges;
     private readonly toast: Toast;
+
+    private readonly form: HTMLFormElement;
+    private readonly deleteDialog: HTMLDialogElement;
+    private readonly snippetList: HTMLDivElement;
+
     private pendingDeleteId: string | null;
 
     constructor(
         store: SnippetStore,
         form: HTMLFormElement,
         snippetList: HTMLDivElement,
-        searchInput: HTMLInputElement,
+        changes: SnippetChanges,
         deleteDialog: HTMLDialogElement,
         toast: Toast,
     ) {
         this.store = store;
         this.form = form;
         this.snippetList = snippetList;
-        this.searchInput = searchInput;
-        this.searchTerm = '';
+        this.changes = changes;
 
         this.deleteDialog = deleteDialog;
         this.toast = toast;
@@ -36,43 +33,14 @@ export class SnippetController {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
         this.handleDialogClose = this.handleDialogClose.bind(this);
 
         this.bindEvents();
     }
 
-    async render(): Promise<void> {
-        const snippets = await this.store.getAll();
-
-        const snippetsToRender = snippets.filter((snippet) => {
-            const searchableText = [
-                snippet.title,
-                snippet.language,
-                snippet.code,
-                ...snippet.tags
-            ]
-                .join(' ')
-                .toLowerCase()
-
-            return searchableText.includes(this.searchTerm);
-        });
-
-        if (snippetsToRender.length === 0) {
-            this.snippetList.innerHTML = `<p class="empty-state">No snippets found.</p>`;
-
-            return;
-        }
-
-        this.snippetList.innerHTML = snippetsToRender
-            .map((snippet) => renderSnippet(snippet))
-            .join('');
-    }
-
     private bindEvents(): void {
         this.form.addEventListener('submit', this.handleSubmit);
         this.snippetList.addEventListener('click', this.handleDelete);
-        this.searchInput.addEventListener('input', this.handleSearch);
         this.deleteDialog.addEventListener('close', this.handleDialogClose);
     }
 
@@ -102,7 +70,7 @@ export class SnippetController {
         };
 
         await this.store.create(newSnippet);
-        await this.render();
+        await this.changes.notify();
         
         this.form.reset();
         this.toast.showSuccess('Snippet added.');
@@ -131,12 +99,6 @@ export class SnippetController {
         this.deleteDialog.showModal();
     }
 
-    private async handleSearch(): Promise<void> {
-        this.searchTerm = this.searchInput.value.trim().toLowerCase();
-
-        await this.render();
-    }
-
     private async handleDialogClose(): Promise<void> {
         if (this.deleteDialog.returnValue !== 'confirm' || !this.pendingDeleteId) {
             this.pendingDeleteId = null;
@@ -146,7 +108,7 @@ export class SnippetController {
         await this.store.delete(this.pendingDeleteId);
         
         this.pendingDeleteId = null;
-        this.render();
+        await this.changes.notify();
         this.toast.showSuccess('Snippet deleted.');
     }
 }

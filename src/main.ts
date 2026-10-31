@@ -4,6 +4,8 @@ import { exampleSnippets } from './snippets/services/exampleSnippets';
 import { SnippetStore } from './snippets/services/snippetStore';
 import { SnippetController } from './snippets/snippetController';
 import { SnippetStorage } from './snippets/services/snippetStorage';
+import { SnippetChanges } from './snippets/services/snippetChanges';
+import { SnippetList } from './snippets/snippetList/snippetList';
 import { Toast } from './shared/toast/toast';
 
 const snippetStorage = new SnippetStorage();
@@ -26,32 +28,36 @@ function startApp(): void {
 
   const searchInput = document.querySelector<HTMLInputElement>('#snippet-search');
 
-  if(!searchInput) {
+  if (!searchInput) {
     throw Error('Search imput element was not found.');
   }
 
   const deleteDialog = document.querySelector<HTMLDialogElement>('#delete-dialog');
 
-  if(!deleteDialog) {
+  if (!deleteDialog) {
     throw Error('Delete dialog element was not found.');
   }
 
   const toast = document.querySelector<HTMLDivElement>('#toast');
 
-  if(!toast) {
+  if (!toast) {
     throw Error('Toast element was not found.');
   }
 
-  const snippetController = new SnippetController(
-    snippetStore, 
-    form, 
+  const changes = new SnippetChanges();
+
+  const list = new SnippetList(snippetStore, changes, snippetList, searchInput);
+
+  new SnippetController(
+    snippetStore,
+    form,
     snippetList,
-    searchInput,
+    changes,
     deleteDialog,
     new Toast(toast),
   );
 
-  snippetController.render();
+  list.render();
 }
 
 startApp();
