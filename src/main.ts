@@ -2,7 +2,7 @@ import './style.css';
 import { renderAppShell } from './renderAppShell';
 import { exampleSnippets } from './snippets/services/exampleSnippets';
 import { SnippetStore } from './snippets/services/snippetStore';
-import { SnippetController } from './snippets/snippetController';
+import { SnippetForm } from './snippets/snippetForm/snippetForm';
 import { SnippetStorage } from './snippets/services/snippetStorage';
 import { SnippetChanges } from './snippets/services/snippetChanges';
 import { SnippetList } from './snippets/snippetList/snippetList';
@@ -14,7 +14,7 @@ const snippetStorage = new SnippetStorage();
 const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
 
 function startApp(): void {
-  document.querySelector<HTMLDivElement>('#app')!.innerHTML = renderAppShell();
+  getElement<HTMLDivElement>('#app')!.innerHTML = renderAppShell();
   
   const form = getElement<HTMLFormElement>('#snippet-form');
   const snippetList = getElement<HTMLDivElement>('#snippet-list');
@@ -31,12 +31,7 @@ function startApp(): void {
     snippetDelete.open((event as CustomEvent<string>).detail)
   });
 
-  new SnippetController(
-    snippetStore,
-    form,
-    changes,
-    toast
-  );
+  new SnippetForm(snippetStore, changes, toast, form);
 
   list.render();
 }

@@ -1,22 +1,22 @@
-import type { SnippetStore } from "./services/snippetStore";
-import type { Language, Snippet } from "./contracts/snippets";
-import type { Toast } from "../shared/toast/toast";
-import type { SnippetChanges } from "./services/snippetChanges";
+import type { SnippetDataSource } from "../contracts/snippetDataSource";
+import type { Language, Snippet } from "../contracts/snippets";
+import type { Toast } from "../../shared/toast/toast";
+import type { SnippetChanges } from "../services/snippetChanges";
 
-export class SnippetController {
-    private readonly store: SnippetStore;
+export class SnippetForm {
+    private readonly dataSource: SnippetDataSource;
     private readonly changes: SnippetChanges;
     private readonly toast: Toast;
 
     private readonly form: HTMLFormElement;
 
     constructor(
-        store: SnippetStore,
-        form: HTMLFormElement,
+        dataSource: SnippetDataSource,
         changes: SnippetChanges,
         toast: Toast,
+        form: HTMLFormElement,
     ) {
-        this.store = store;
+        this.dataSource = dataSource;
         this.form = form;
         this.changes = changes;
 
@@ -56,8 +56,9 @@ export class SnippetController {
             createdAt: new Date().toISOString(),
         };
 
-        await this.store.create(newSnippet);
-        await this.changes.notify();
+        await this.dataSource.create(newSnippet);
+        
+        this.changes.notify();
         
         this.form.reset();
         this.toast.showSuccess('Snippet added.');
