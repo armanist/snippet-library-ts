@@ -4,6 +4,7 @@ import { exampleSnippets } from './snippets';
 import { SnippetStore } from './features/snippets/snippetStore';
 import { SnippetController } from './features/snippets/snippetController';
 import { SnippetStorage } from './features/snippets/snippetStorage';
+import { Toast } from './shared/toast/toast';
 
 const snippetStorage = new SnippetStorage();
 const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
@@ -47,7 +48,7 @@ function startApp(): void {
     snippetList,
     searchInput,
     deleteDialog,
-    toast,
+    new Toast(toast),
   );
 
   snippetController.render();

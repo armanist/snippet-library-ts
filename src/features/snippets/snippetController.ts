@@ -1,8 +1,9 @@
 import type { SnippetStore } from "./snippetStore";
 import type { Language, Snippet } from "../../types";
+import type { Toast } from "../../shared/toast/toast";
 import { renderSnippet } from "../../views/renderSnippet";
 
-type ToastType = 'success' | 'error';
+
 
 export class SnippetController {
     private readonly store: SnippetStore;
@@ -12,9 +13,8 @@ export class SnippetController {
     private searchTerm: string;
 
     private readonly deleteDialog: HTMLDialogElement;
-    private readonly toast: HTMLDivElement;
+    private readonly toast: Toast;
     private pendingDeleteId: string | null;
-    private toastTimeoutId: number | undefined;
 
     constructor(
         store: SnippetStore,
@@ -22,7 +22,7 @@ export class SnippetController {
         snippetList: HTMLDivElement,
         searchInput: HTMLInputElement,
         deleteDialog: HTMLDialogElement,
-        toast: HTMLDivElement,
+        toast: Toast,
     ) {
         this.store = store;
         this.form = form;
@@ -33,7 +33,6 @@ export class SnippetController {
         this.deleteDialog = deleteDialog;
         this.toast = toast;
         this.pendingDeleteId = null;
-        this.toastTimeoutId = undefined;
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -89,7 +88,7 @@ export class SnippetController {
         const tags = String(formData.get('tags')).split(',').map((tag) => tag.trim()).filter(Boolean);
 
         if (!title || !code) {
-            this.showToast('Title and code are required.', 'error');
+            this.toast.showError('Title and code are required.');
             return;
         }
 
@@ -106,7 +105,7 @@ export class SnippetController {
         await this.render();
         
         this.form.reset();
-        this.showToast('Snippet added.');
+        this.toast.showSuccess('Snippet added.');
     }
 
     private handleDelete(event: MouseEvent): void {
@@ -148,20 +147,6 @@ export class SnippetController {
         
         this.pendingDeleteId = null;
         this.render();
-        this.showToast('Snippet deleted.');
-    }
-
-    private showToast(message: string, type: ToastType = 'success'): void {
-        if (this.toastTimeoutId !== undefined) {
-            window.clearTimeout(this.toastTimeoutId);
-        }
-
-        this.toast.textContent = message;
-        this.toast.className = `toast toast--${type} toast--visible`;
-
-        this.toastTimeoutId = window.setTimeout(() => {
-            this.toast.className = 'toast';
-            this.toastTimeoutId = undefined;
-        }, 3000);
+        this.toast.showSuccess('Snippet deleted.');
     }
 }
