@@ -1,7 +1,8 @@
 import type { Snippet } from "../../types";
 import type { SnippetStorage } from "./snippetStorage";
+import type { SnippetDataSource } from "./snippetDataSource";
 
-export class SnippetStore {
+export class SnippetStore implements SnippetDataSource {
 
     private snippets: Snippet[];
     private readonly storage: SnippetStorage;
@@ -14,16 +15,16 @@ export class SnippetStore {
         this.snippets = storedSnippets ?? [...initialSnippets];
     }
 
-    getAll(): Snippet[] {
+    async getAll(): Promise<Snippet[]> {
         return [...this.snippets];
     }
 
-    add(snippet: Snippet): void {
+    async create(snippet: Snippet): Promise<void> {
         this.snippets = [snippet, ...this.snippets];
         this.storage.save(this.snippets);
     }
 
-    remove(id: string): void {
+    async delete(id: string): Promise<void> {
         this.snippets = this.snippets.filter((snippet) => snippet.id !== id);
         this.storage.save(this.snippets);
     }

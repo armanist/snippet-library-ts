@@ -14,7 +14,7 @@ export class SnippetController {
     private readonly deleteDialog: HTMLDialogElement;
     private readonly toast: HTMLDivElement;
     private pendingDeleteId: string | null;
-    private toastTimeoutId:number | undefined;
+    private toastTimeoutId: number | undefined;
 
     constructor(
         store: SnippetStore,
@@ -43,21 +43,21 @@ export class SnippetController {
         this.bindEvents();
     }
 
-    render(): void {
-        const snippetsToRender = this.store
-            .getAll()
-            .filter((snippet) => {
-                const searchableText = [
-                    snippet.title,
-                    snippet.language,
-                    snippet.code,
-                    ...snippet.tags
-                ]
-                    .join(' ')
-                    .toLowerCase()
+    async render(): Promise<void> {
+        const snippets = await this.store.getAll();
 
-                return searchableText.includes(this.searchTerm);
-            });
+        const snippetsToRender = snippets.filter((snippet) => {
+            const searchableText = [
+                snippet.title,
+                snippet.language,
+                snippet.code,
+                ...snippet.tags
+            ]
+                .join(' ')
+                .toLowerCase()
+
+            return searchableText.includes(this.searchTerm);
+        });
 
         if (snippetsToRender.length === 0) {
             this.snippetList.innerHTML = `<p class="empty-state">No snippets found.</p>`;
@@ -77,7 +77,7 @@ export class SnippetController {
         this.deleteDialog.addEventListener('close', this.handleDialogClose);
     }
 
-    private handleSubmit(event: SubmitEvent): void {
+    private async handleSubmit(event: SubmitEvent): Promise<void> {
         event.preventDefault();
 
 
@@ -102,8 +102,9 @@ export class SnippetController {
             createdAt: new Date().toISOString(),
         };
 
-        this.store.add(newSnippet);
-        this.render();
+        await this.store.create(newSnippet);
+        await this.render();
+        
         this.form.reset();
         this.showToast('Snippet added.');
     }
@@ -131,26 +132,27 @@ export class SnippetController {
         this.deleteDialog.showModal();
     }
 
-    private handleSearch(): void {
+    private async handleSearch(): Promise<void> {
         this.searchTerm = this.searchInput.value.trim().toLowerCase();
 
-        this.render();
+        await this.render();
     }
 
-    private handleDialogClose(): void {
-        if(this.deleteDialog.returnValue !== 'confirm' || !this.pendingDeleteId) {
+    private async handleDialogClose(): Promise<void> {
+        if (this.deleteDialog.returnValue !== 'confirm' || !this.pendingDeleteId) {
             this.pendingDeleteId = null;
             return;
         }
 
-        this.store.remove(this.pendingDeleteId);
+        await this.store.delete(this.pendingDeleteId);
+        
         this.pendingDeleteId = null;
         this.render();
         this.showToast('Snippet deleted.');
     }
 
     private showToast(message: string, type: ToastType = 'success'): void {
-        if(this.toastTimeoutId !== undefined) {
+        if (this.toastTimeoutId !== undefined) {
             window.clearTimeout(this.toastTimeoutId);
         }
 
