@@ -8,42 +8,19 @@ import { SnippetChanges } from './snippets/services/snippetChanges';
 import { SnippetList } from './snippets/snippetList/snippetList';
 import { Toast } from './shared/toast/toast';
 import { SnippetDelete } from './snippets/snippetDelete/snippetDelete';
+import { getElement } from './shared/dom/getElement';
 
 const snippetStorage = new SnippetStorage();
 const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
 
 function startApp(): void {
   document.querySelector<HTMLDivElement>('#app')!.innerHTML = renderAppShell();
-
-  const form = document.querySelector<HTMLFormElement>('#snippet-form');
-
-  if (!form) {
-    throw Error('Snippet form element was not found.');
-  }
-
-  const snippetList = document.querySelector<HTMLDivElement>('#snippet-list');
-
-  if (!snippetList) {
-    throw Error('Snippet list element was not found.');
-  }
-
-  const searchInput = document.querySelector<HTMLInputElement>('#snippet-search');
-
-  if (!searchInput) {
-    throw Error('Search imput element was not found.');
-  }
-
-  const deleteDialog = document.querySelector<HTMLDialogElement>('#delete-dialog');
-
-  if (!deleteDialog) {
-    throw Error('Delete dialog element was not found.');
-  }
-
-  const toastElement = document.querySelector<HTMLDivElement>('#toast');
-
-  if (!toastElement) {
-    throw Error('Toast element was not found.');
-  }
+  
+  const form = getElement<HTMLFormElement>('#snippet-form');
+  const snippetList = getElement<HTMLDivElement>('#snippet-list');
+  const searchInput = getElement<HTMLInputElement>('#snippet-search');
+  const deleteDialog = getElement<HTMLDialogElement>('#delete-dialog');
+  const toastElement = getElement<HTMLDivElement>('#toast');
 
   const changes = new SnippetChanges();
   const toast = new Toast(toastElement);
