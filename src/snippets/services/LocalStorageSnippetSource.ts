@@ -1,9 +1,8 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
-import type { Snippet } from "../contracts/snippets";
+import type { Snippet } from "../contracts/snippet";
 
-export class LocalStorageSnippetSource  implements SnippetDataSource {
+export class LocalStorageSnippetSource implements SnippetDataSource {
     private readonly storageKey = 'snippet-library:snippets';
-    private readonly initialSnippets: Snippet[] = [];
 
     async getAll(): Promise<Snippet[]> {
         return this.load();
@@ -20,14 +19,14 @@ export class LocalStorageSnippetSource  implements SnippetDataSource {
     private load(): Snippet[] {
         const storedSnippets = localStorage.getItem(this.storageKey);
 
-        if(!storedSnippets) {
-            return [...this.initialSnippets];
+        if (!storedSnippets) {
+            return [];
         }
 
         try {
             return JSON.parse(storedSnippets) as Snippet[];
         } catch {
-            return [...this.initialSnippets];
+            return [];
         }
     }
 

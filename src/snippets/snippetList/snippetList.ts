@@ -3,7 +3,7 @@ import type { SnippetChanges } from "../services/snippetChanges";
 import type { Toast } from "../../shared/toast/toast";
 import { renderSnippet } from "./renderSnippet";
 import { getElement } from "../../shared/dom/getElement";
-import type { Snippet } from "../contracts/snippets";
+import type { Snippet } from "../contracts/snippet";
 
 export class SnippetList {
     private readonly dataSource: SnippetDataSource;

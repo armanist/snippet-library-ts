@@ -1,4 +1,4 @@
-import { languages } from "./snippets/contracts/snippets";
+import { languages } from "./snippets/contracts/snippet";
 import { renderDeleteDialog } from "./snippets/snippetDelete/renderDeleteDialog";
 import { renderToast } from "./shared/toast/renderToast";
 

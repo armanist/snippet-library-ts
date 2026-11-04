@@ -12,7 +12,7 @@ const dataSource = createDataSource();
 
 function startApp(): void {
   getElement<HTMLDivElement>('#app').innerHTML = renderAppShell();
-  
+
   const changes = new SnippetChanges();
 
   const toast = new Toast();

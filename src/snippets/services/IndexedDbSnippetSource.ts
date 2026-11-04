@@ -1,5 +1,5 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
-import type { Snippet } from "../contracts/snippets";
+import type { Snippet } from "../contracts/snippet";
 
 export class IndexedDbSnippetSource implements SnippetDataSource {
     private readonly databaseName = 'snippet-library';

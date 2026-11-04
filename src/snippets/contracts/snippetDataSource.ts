@@ -1,4 +1,4 @@
-import type { Snippet } from "./snippets";
+import type { Snippet } from "./snippet";
 
 export interface SnippetDataSource {
     getAll(): Promise<Snippet[]>;

@@ -1,4 +1,4 @@
-import type { Snippet } from "../contracts/snippets";
+import type { Snippet } from "../contracts/snippet";
 import { escapeHtml } from "../../shared/dom/escapeHtml";
 
 export function renderSnippet(snippet: Snippet): string {

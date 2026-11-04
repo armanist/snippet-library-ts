@@ -1,5 +1,5 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
-import type { Language, Snippet } from "../contracts/snippets";
+import type { Language, Snippet } from "../contracts/snippet";
 import type { Toast } from "../../shared/toast/toast";
 import type { SnippetChanges } from "../services/snippetChanges";
 import { getElement } from "../../shared/dom/getElement";
