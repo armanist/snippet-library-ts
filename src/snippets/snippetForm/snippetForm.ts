@@ -2,22 +2,23 @@ import type { SnippetDataSource } from "../contracts/snippetDataSource";
 import type { Language, Snippet } from "../contracts/snippets";
 import type { Toast } from "../../shared/toast/toast";
 import type { SnippetChanges } from "../services/snippetChanges";
+import { getElement } from "../../shared/dom/getElement";
 
 export class SnippetForm {
     private readonly dataSource: SnippetDataSource;
     private readonly changes: SnippetChanges;
     private readonly toast: Toast;
-
     private readonly form: HTMLFormElement;
 
     constructor(
         dataSource: SnippetDataSource,
         changes: SnippetChanges,
         toast: Toast,
-        form: HTMLFormElement,
     ) {
         this.dataSource = dataSource;
-        this.form = form;
+
+        this.form = getElement<HTMLFormElement>('#snippet-form');
+
         this.changes = changes;
 
         this.toast = toast;

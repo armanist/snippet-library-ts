@@ -1,11 +1,13 @@
+import { getElement } from "../dom/getElement";
+
 type ToastType = 'success' | 'error';
 
 export class Toast {
     private readonly element: HTMLDivElement;
     private timeoutId: number | undefined;
 
-    constructor(element: HTMLDivElement) {
-        this.element = element;
+    constructor() {
+        this.element = getElement<HTMLDivElement>('#toast');;
         this.timeoutId = undefined;
     }
 

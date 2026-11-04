@@ -16,20 +16,16 @@ const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
 function startApp(): void {
   getElement<HTMLDivElement>('#app').innerHTML = renderAppShell();
   
-  const form = getElement<HTMLFormElement>('#snippet-form');
-  const snippetList = getElement<HTMLDivElement>('#snippet-list');
-  const searchInput = getElement<HTMLInputElement>('#snippet-search');
-  const deleteDialog = getElement<HTMLDialogElement>('#delete-dialog');
-  const toastElement = getElement<HTMLDivElement>('#toast');
-
   const changes = new SnippetChanges();
-  const toast = new Toast(toastElement);
-  const list = new SnippetList(snippetStore, changes, snippetList, searchInput);
-  new SnippetDelete(snippetStore, changes, toast, deleteDialog, snippetList);
 
-  new SnippetForm(snippetStore, changes, toast, form);
+  const toast = new Toast();
 
-  list.render();
+  new SnippetList(snippetStore, changes);
+
+  new SnippetDelete(snippetStore, changes, toast);
+
+  new SnippetForm(snippetStore, changes, toast);
+
 }
 
 startApp();

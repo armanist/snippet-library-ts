@@ -1,32 +1,33 @@
 import type { Toast } from "../../shared/toast/toast";
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
 import type { SnippetChanges } from "../services/snippetChanges";
+import { getElement } from "../../shared/dom/getElement";
 
 export class SnippetDelete {
     private readonly dataSource: SnippetDataSource;
     private readonly changes: SnippetChanges;
     private readonly toast: Toast;
     private readonly dialog: HTMLDialogElement;
+    private readonly listElement: HTMLDivElement;
     private pendingId: string | null;
 
     constructor(
         dataSource: SnippetDataSource,
         changes: SnippetChanges,
         toast: Toast,
-        dialog: HTMLDialogElement,
-        listElement: HTMLDivElement,
     ) {
         this.dataSource = dataSource;
         this.changes = changes;
         this.toast = toast;
-        this.dialog = dialog;
+        this.dialog = getElement<HTMLDialogElement>('#delete-dialog');
+        this.listElement = getElement<HTMLDivElement>('#snippet-list');
         this.pendingId = null;
 
         this.handleClose = this.handleClose.bind(this);
         this.dialog.addEventListener('close', this.handleClose);
 
         this.handleListClick = this.handleListClick.bind(this);
-        listElement.addEventListener('click', this.handleListClick);
+        this.listElement.addEventListener('click', this.handleListClick);
     }
 
     private open(id: string): void {
