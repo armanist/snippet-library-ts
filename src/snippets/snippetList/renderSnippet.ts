@@ -1,12 +1,13 @@
 import type { Snippet } from "../contracts/snippets";
+import { escapeHtml } from "../../shared/dom/escapeHtml";
 
 export function renderSnippet(snippet: Snippet): string {
-    return `
+  return `
       <article class="snippet-card">
         <div class="snippet-card__header">
           <div>
-            <h3>${snippet.title}</h3>
-            <p>${snippet.language}</p>
+            <h3>${escapeHtml(snippet.title)}</h3>
+            <p>${escapeHtml(snippet.language)}</p>
           </div>
            <button
                 type="button"
@@ -17,10 +18,10 @@ export function renderSnippet(snippet: Snippet): string {
     </button>
         </div>
 
-        <pre><code>${snippet.code}</code></pre>
+        <pre><code>${escapeHtml(snippet.code)}</code></pre>
 
         <div class="tag-list">
-          ${snippet.tags.map((tag) => `<span>${tag}</span>`).join('')}
+          ${snippet.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}
         </div>
       </article>
     `;
