@@ -44,7 +44,12 @@ export class SnippetDelete {
             return;
         }
 
-        await this.dataSource.delete(id);
+        try {
+            await this.dataSource.delete(id);
+        } catch {
+            this.toast.showError('Could not delete snippet.');
+            return;
+        }
 
         this.changes.notify();
         this.toast.showSuccess('Snippet deleted.');

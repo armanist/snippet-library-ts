@@ -57,7 +57,12 @@ export class SnippetForm {
             createdAt: new Date().toISOString(),
         };
 
-        await this.dataSource.create(newSnippet);
+        try {
+            await this.dataSource.create(newSnippet);
+        } catch {
+            this.toast.showError('Could not add snippet.');
+            return;
+        }
         
         this.changes.notify();
         

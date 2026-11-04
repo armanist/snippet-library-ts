@@ -17,7 +17,7 @@ function startApp(): void {
 
   const toast = new Toast();
 
-  new SnippetList(dataSource, changes);
+  new SnippetList(dataSource, changes, toast);
 
   new SnippetDelete(dataSource, changes, toast);
 

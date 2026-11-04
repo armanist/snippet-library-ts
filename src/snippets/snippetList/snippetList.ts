@@ -1,10 +1,13 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
 import type { SnippetChanges } from "../services/snippetChanges";
+import type { Toast } from "../../shared/toast/toast";
 import { renderSnippet } from "./renderSnippet";
 import { getElement } from "../../shared/dom/getElement";
+import type { Snippet } from "../contracts/snippets";
 
 export class SnippetList {
     private readonly dataSource: SnippetDataSource;
+    private readonly toast: Toast;
     private readonly listElement: HTMLDivElement;
     private readonly searchInput: HTMLInputElement;
 
@@ -13,6 +16,7 @@ export class SnippetList {
     constructor(
         dataSource: SnippetDataSource,
         changes: SnippetChanges,
+        toast: Toast,
     ) {
         this.dataSource = dataSource;
         this.listElement = getElement<HTMLDivElement>('#snippet-list');
@@ -21,6 +25,7 @@ export class SnippetList {
 
         this.handleSearch = this.handleSearch.bind(this);
         this.searchInput.addEventListener('input', this.handleSearch);
+        this.toast = toast;
 
         changes.subscribe(() => this.render());
         
@@ -28,7 +33,14 @@ export class SnippetList {
     }
 
     async render(): Promise<void> {
-        const snippets = await this.dataSource.getAll();
+        let snippets: Snippet[];
+
+        try {
+            snippets = await this.dataSource.getAll();
+        } catch {
+            this.toast.showError('Could not load snippets.');
+            return;
+        }
 
         const snippetsToRender = snippets.filter((snippet) => {
             const searchableText = [
