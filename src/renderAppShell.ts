@@ -18,7 +18,7 @@ export function renderAppShell(): string {
 
         <section class="workspace">
           <section class="panel">
-            <h2>Add Snippet</h2>
+            <h2 id="form-title">Add Snippet</h2>
 
             <form class="snippet-form" id="snippet-form">
               <label>
@@ -42,8 +42,10 @@ export function renderAppShell(): string {
                 Tags
                 <input id="tags" name="tags" type="text" placeholder="loop, array, php" />
               </label>
-
-              <button type="submit">Add Snippet</button>
+              <div class="form-actions">
+                <button type="submit" id="form-submit">Add Snippet</button>
+                <button type="button" id="form-cancel" hidden>Cancel</button>
+              </div>
             </form>
           </section>
 
