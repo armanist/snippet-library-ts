@@ -13,7 +13,7 @@ export function renderSnippet(snippet: Snippet): string {
                 type="button"
                 class="delete-button"
                 data-snippet-id="${snippet.id}"
-            can>
+            >
       Delete
     </button>
         </div>
