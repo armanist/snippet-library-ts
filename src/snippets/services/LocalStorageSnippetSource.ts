@@ -3,11 +3,7 @@ import type { Snippet } from "../contracts/snippets";
 
 export class LocalStorageSnippetSource  implements SnippetDataSource {
     private readonly storageKey = 'snippet-library:snippets';
-    private readonly initialSnippets: Snippet[];
-
-    constructor(initialSnippets: Snippet[]) {
-        this.initialSnippets = initialSnippets;
-    }
+    private readonly initialSnippets: Snippet[] = [];
 
     async getAll(): Promise<Snippet[]> {
         return this.load();

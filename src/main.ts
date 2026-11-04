@@ -1,6 +1,5 @@
 import './style.css';
 import { renderAppShell } from './renderAppShell';
-import { exampleSnippets } from './snippets/services/exampleSnippets';
 import { LocalStorageSnippetSource } from './snippets/services/LocalStorageSnippetSource';
 import { SnippetForm } from './snippets/snippetForm/snippetForm';
 import { SnippetChanges } from './snippets/services/snippetChanges';
@@ -9,7 +8,7 @@ import { Toast } from './shared/toast/toast';
 import { SnippetDelete } from './snippets/snippetDelete/snippetDelete';
 import { getElement } from './shared/dom/getElement';
 
-const dataSource = new LocalStorageSnippetSource(exampleSnippets);
+const dataSource = new LocalStorageSnippetSource();
 
 function startApp(): void {
   getElement<HTMLDivElement>('#app').innerHTML = renderAppShell();
