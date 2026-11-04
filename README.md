@@ -1,10 +1,11 @@
 ﻿# Snippet Library - TypeScript
 
-A small snippet manager built with vanilla TypeScript and Vite, with no framework. It lets you save, search, and delete code snippets by language and tags. Snippets are stored in the browser, in either `localStorage` or IndexedDB, selected with one setting.
+A small snippet manager built with vanilla TypeScript and Vite, with no framework. It lets you save, search, edit, and delete code snippets by language and tags. Snippets are stored in the browser, in either `localStorage` or IndexedDB, selected with one setting.
 
 ## Features
 
 - Add snippets with a title, language, code, and comma-separated tags.
+- Edit a snippet: the Edit button fills the form, and Save Changes updates it. Cancel leaves edit mode.
 - Search snippets by title, language, code, and tags.
 - Confirm deletions in a dialog.
 - See success and error notifications.
@@ -91,7 +92,7 @@ src/
     services/                    LocalStorageSnippetSource, IndexedDbSnippetSource,
                                  createDataSource, SnippetChanges
     snippetList/                 SnippetList (search and rendering), renderSnippet
-    snippetForm/                 SnippetForm (adding snippets)
+    snippetForm/                 SnippetForm (adding and editing snippets)
     snippetDelete/               SnippetDelete (confirm dialog and deletion),
                                  renderDeleteDialog
 ```
@@ -100,14 +101,14 @@ src/
 
 ### One contract, two storages
 
-The units never touch a storage directly. They talk to a `SnippetDataSource` (`getAll`, `create`, `delete`), and every method returns a `Promise`. Two classes implement it: `LocalStorageSnippetSource` and `IndexedDbSnippetSource`. `createDataSource()` is the single place that reads `VITE_SNIPPET_STORAGE` and picks one. Nothing else knows which storage is active, so adding another (for example a server) means adding one class and one line in `createDataSource()`.
+The units never touch a storage directly. They talk to a `SnippetDataSource` (`getAll`, `create`, `update`, `delete`), and every method returns a `Promise`. `create` takes a `SnippetDraft` (title, language, code, tags) and `update` takes an id and the changes, the same shape as in the Vue and Angular versions. The storage creates the `id` and `createdAt`. Two classes implement it: `LocalStorageSnippetSource` and `IndexedDbSnippetSource`. `createDataSource()` is the single place that reads `VITE_SNIPPET_STORAGE` and picks one. Nothing else knows which storage is active, so adding another (for example a server) means adding one class and one line in `createDataSource()`.
 
 ### Each responsibility has one home
 
 | Unit | Responsibility |
 | --- | --- |
 | `SnippetList` | Loads the snippets, filters them by the search text, and draws them. Reloads when the snippets change. |
-| `SnippetForm` | Reads the form, validates it, and creates the snippet. |
+| `SnippetForm` | Reads the form, validates it, and creates or updates the snippet. Handles the Edit buttons, fills the form in edit mode, and leaves edit mode when the snippet is saved, cancelled, or deleted. |
 | `SnippetDelete` | Opens the confirm dialog when a Delete button is clicked, and deletes the snippet when confirmed. |
 | `Toast` | Shows a success or error message and hides it after 3 seconds. |
 | `SnippetChanges` | A small event that says "snippets changed". |
@@ -116,7 +117,7 @@ Each unit finds its own elements in the page. `main.ts` only creates the data so
 
 ### Keeping the list up to date
 
-After a snippet is added or deleted, the form and delete units call `SnippetChanges.notify()`. `SnippetList` subscribed to it, so it reloads and redraws itself. No unit calls another unit directly.
+After a snippet is added, updated, or deleted, the form and delete units call `SnippetChanges.notify()`. `SnippetList` subscribed to it, so it reloads and redraws itself. `SnippetForm` subscribed too: if the snippet being edited was deleted, it leaves edit mode. No unit calls another unit directly.
 
 ## Notes
 
@@ -126,6 +127,5 @@ After a snippet is added or deleted, the form and delete units call `SnippetChan
 
 ## Roadmap
 
-- Add editing support.
 - Add automated tests.
 - Add a storage that talks to a server.
