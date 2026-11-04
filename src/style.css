@@ -290,6 +290,26 @@ h1 {
   color: #ffffff !important;
 }
 
+.snippet-card__actions {
+  display: flex;
+  gap: 8px;
+  align-self: start;
+}
+
+.edit-button {
+  cursor: pointer;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+}
+
+.edit-button:hover {
+  background: #dbeafe;
+}
+
 .toast {
   position: fixed;
   right: 24px;

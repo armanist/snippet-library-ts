@@ -9,13 +9,18 @@ export function renderSnippet(snippet: Snippet): string {
             <h3>${escapeHtml(snippet.title)}</h3>
             <p>${escapeHtml(snippet.language)}</p>
           </div>
-           <button
+            <div class="snippet-card__actions">
+               <button 
+                type="button" 
+                class="edit-button" 
+                data-edit-id="${snippet.id}">Edit
+              </button>
+              <button
                 type="button"
                 class="delete-button"
-                data-snippet-id="${snippet.id}"
-            >
-      Delete
-    </button>
+                data-snippet-id="${snippet.id}">Delete
+              </button>
+            </div>
         </div>
 
         <pre><code>${escapeHtml(snippet.code)}</code></pre>
