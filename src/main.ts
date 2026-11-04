@@ -1,17 +1,15 @@
 import './style.css';
 import { renderAppShell } from './renderAppShell';
 import { exampleSnippets } from './snippets/services/exampleSnippets';
-import { SnippetStore } from './snippets/services/snippetStore';
+import { LocalStorageSnippetSource } from './snippets/services/LocalStorageSnippetSource';
 import { SnippetForm } from './snippets/snippetForm/snippetForm';
-import { SnippetStorage } from './snippets/services/snippetStorage';
 import { SnippetChanges } from './snippets/services/snippetChanges';
 import { SnippetList } from './snippets/snippetList/snippetList';
 import { Toast } from './shared/toast/toast';
 import { SnippetDelete } from './snippets/snippetDelete/snippetDelete';
 import { getElement } from './shared/dom/getElement';
 
-const snippetStorage = new SnippetStorage();
-const snippetStore = new SnippetStore(snippetStorage, exampleSnippets);
+const dataSource = new LocalStorageSnippetSource(exampleSnippets);
 
 function startApp(): void {
   getElement<HTMLDivElement>('#app').innerHTML = renderAppShell();
@@ -20,11 +18,11 @@ function startApp(): void {
 
   const toast = new Toast();
 
-  new SnippetList(snippetStore, changes);
+  new SnippetList(dataSource, changes);
 
-  new SnippetDelete(snippetStore, changes, toast);
+  new SnippetDelete(dataSource, changes, toast);
 
-  new SnippetForm(snippetStore, changes, toast);
+  new SnippetForm(dataSource, changes, toast);
 
 }
 
