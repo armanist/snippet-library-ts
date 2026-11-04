@@ -40,6 +40,8 @@ export class SnippetForm {
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.bindEvents();
+
+        changes.subscribe(() => this.handleChange());
     }
 
     private bindEvents(): void {
@@ -140,5 +142,22 @@ export class SnippetForm {
         this.titleElement.textContent = editing ? 'Edit Snippet' : 'Add Snippet';
         this.submitButton.textContent = editing ? 'Save Changes' : 'Add Snippet';
         this.cancelButton.hidden = !editing;
+    }
+
+    private async handleChange(): Promise<void> {
+        const editing = this.editingSnippet;
+
+        if (!editing) {
+            return;
+        }
+
+        try {
+            const snippets = await this.dataSource.getAll();
+            const stillExists = snippets.some((snippet) => snippet.id === editing.id);
+
+            if(!stillExists && this.editingSnippet === editing) {
+                this.cancelEdit();
+            }
+        } catch {}
     }
 }
