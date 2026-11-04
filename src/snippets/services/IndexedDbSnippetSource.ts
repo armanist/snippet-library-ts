@@ -1,5 +1,5 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
-import type { Snippet } from "../contracts/snippet";
+import type { Snippet, SnippetDraft, SnippetUpdate } from "../contracts/snippet";
 
 export class IndexedDbSnippetSource implements SnippetDataSource {
     private readonly databaseName = 'snippet-library';
@@ -13,18 +13,49 @@ export class IndexedDbSnippetSource implements SnippetDataSource {
     async getAll(): Promise<Snippet[]> {
         const database = await this.database;
         const store = database.transaction(this.storeName, 'readonly').objectStore(this.storeName);
-        const snippets: Snippet[] = await this.requestToPromise(store.getAll());    
+        const snippets: Snippet[] = await this.requestToPromise(store.getAll());
 
         return snippets.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     }
 
-    async create(snippet: Snippet): Promise<void> {
+    async create(draft: SnippetDraft): Promise<Snippet> {
+        const snippet: Snippet = {
+            ...draft,
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+        };
+
         const database = await this.database;
         const transaction = database.transaction(this.storeName, 'readwrite');
 
         transaction.objectStore(this.storeName).add(snippet);
 
         await this.transactionToPromise(transaction);
+
+        return snippet;
+    }
+
+    async update(id: string, changes: SnippetUpdate): Promise<Snippet> {
+        const database = await this.database;
+        const transaction = database.transaction(this.storeName, 'readwrite');
+        const store = transaction.objectStore(this.storeName);
+
+        const existing: Snippet | undefined = await this.requestToPromise(store.get(id));
+
+        if (!existing) {
+            throw new Error(`Snippet "${id}" was not found.`);
+        }
+
+        const updated: Snippet = {
+            ...existing,
+            ...changes,
+        }
+
+        store.put(updated);
+
+        await this.transactionToPromise(transaction);
+
+        return updated;
     }
 
     async delete(id: string): Promise<void> {

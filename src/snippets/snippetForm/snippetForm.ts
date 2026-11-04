@@ -1,5 +1,5 @@
 import type { SnippetDataSource } from "../contracts/snippetDataSource";
-import type { Language, Snippet } from "../contracts/snippet";
+import type { Language, SnippetDraft } from "../contracts/snippet";
 import type { Toast } from "../../shared/toast/toast";
 import type { SnippetChanges } from "../services/snippetChanges";
 import { getElement } from "../../shared/dom/getElement";
@@ -48,17 +48,15 @@ export class SnippetForm {
             return;
         }
 
-        const newSnippet: Snippet = {
-            id: crypto.randomUUID(),
+        const draft: SnippetDraft = {
             title,
             language,
             code,
             tags,
-            createdAt: new Date().toISOString(),
         };
 
         try {
-            await this.dataSource.create(newSnippet);
+            await this.dataSource.create(draft);
         } catch {
             this.toast.showError('Could not add snippet.');
             return;
