@@ -79,22 +79,41 @@ The variable name starts with `VITE_` because Vite only exposes variables with t
 ## How it is organized
 
 ```text
+.env.development                 VITE_SNIPPET_STORAGE for npm run dev
+.env.production                  VITE_SNIPPET_STORAGE for npm run build
+index.html                       The page that loads src/main.ts
+package.json
+tsconfig.json
+public/                          Static files (favicon)
 src/
-  main.ts                        Creates the units
+  main.ts                        Creates the data source, Toast, SnippetChanges, and the units
   env.d.ts                       Types for the env variable
   renderAppShell.ts              The page markup
   style.css
   shared/
-    dom/                         getElement helper
-    toast/                       Toast, renderToast
+    dom/
+      getElement.ts              Finds an element or throws a clear error
+      escapeHtml.ts              Escapes user text before it goes into HTML
+    toast/
+      toast.ts                   Toast
+      renderToast.ts             The toast markup
   snippets/
-    contracts/                   Types, and the SnippetDataSource interface
-    services/                    LocalStorageSnippetSource, IndexedDbSnippetSource,
-                                 createDataSource, SnippetChanges
-    snippetList/                 SnippetList (search and rendering), renderSnippet
-    snippetForm/                 SnippetForm (adding and editing snippets)
-    snippetDelete/               SnippetDelete (confirm dialog and deletion),
-                                 renderDeleteDialog
+    contracts/
+      snippet.ts                 Snippet, SnippetDraft, SnippetUpdate, Language, languages
+      snippetDataSource.ts       The SnippetDataSource interface
+    services/
+      LocalStorageSnippetSource.ts   Storage in localStorage
+      IndexedDbSnippetSource.ts      Storage in IndexedDB
+      createDataSource.ts        Picks the storage from VITE_SNIPPET_STORAGE
+      snippetChanges.ts          SnippetChanges, the "snippets changed" event
+    snippetList/
+      snippetList.ts             SnippetList: loads, searches, and draws the list
+      renderSnippet.ts           The markup of one snippet card
+    snippetForm/
+      snippetForm.ts             SnippetForm: adds and edits snippets
+    snippetDelete/
+      snippetDelete.ts           SnippetDelete: confirm dialog and deletion
+      renderDeleteDialog.ts      The dialog markup
 ```
 
 ## How it works
